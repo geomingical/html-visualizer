@@ -1,6 +1,6 @@
 ---
 name: html-visualizer
-description: 把長文件、報告、規格、設計決策、架構說明、教學、儀表板、待拍板選項預設做成 HTML 而非 Markdown 給人看。使用者說「整理成文件／做份報告／視覺化／給我看的版本／給老闆看／教我這個／列選項讓我選」、內容超過 50 行、或適合用表格／流程圖／對比圖呈現時主動使用。精神：人類看 HTML、AI 看 Markdown。
+description: 把長文件、報告、規格、設計決策、架構說明、教學、儀表板與待拍板選項做成 HTML。適用於視覺化報告、概念解釋、課程筆記、影片與逐字稿伴讀；已有教學材料依來源順序保留動機、推演、例子及回扣。內容超過 50 行、含決策選項，或適合流程圖、表格、對比圖時主動使用。人類看 HTML，AI 看 Markdown。
 ---
 
 # HTML Visualizer
@@ -36,6 +36,7 @@ description: 把長文件、報告、規格、設計決策、架構說明、教�
 | 架構說明 / 系統文件 | 「解釋這個系統怎麼運作」 |
 | PR review / 程式碼說明 | 「幫我整理這個 PR 的變更」 |
 | 教學 / 概念解釋 | 「教我這個概念」 |
+| 課程 / 教學影片 / 逐字稿伴讀 | 「依這支影片做完整筆記」；沿用來源順序與理解脈絡 |
 | 儀表板 / 進度追蹤 | 「做個 progress dashboard」 |
 | 互動式探索 / playground | 「讓我可以調參數試試看」 |
 | 決策追認表 / 詢問選項 | 「列出選項讓我選」 |
@@ -66,7 +67,8 @@ description: 把長文件、報告、規格、設計決策、架構說明、教�
 | **Marathon 收尾 / Sprint 結束 / 待拍板事項 ≥ 5 題 / 標題含 "marathon" / "收尾" / "追認" / "review 一批" / 含 "pending" / "QA pass" / "未 commit" / "未 push"** | ⭐ **`references/examples/marathon-decision-sheet/`** — 必先讀 該 README + 複製 `index.html` 改內容 | 題目地圖 / 就地拍板 / radio / sticky bottom bar with copy / sidebar nav / progress counter / pain card / before-after / failure tree / metric cards 全要 |
 | ⭐ **拍板題 < 5 題（不論關鍵字命中幾個）** | `assets/base-template.html` + 就地拍板卡（複製 marathon 範本的 `.inline-decide` 區塊與 sticky bar / 複製 builder）| **不套六段敘事**：開場兩三句講清背景 → 題目立刻出現，每題自帶背景與對照 |
 | 工程儀表板 / 監控介面 / dashboard 風偏好（user 明說）| `assets/base-template.html` 換 functional token（藍 accent + 純 sans；規則見 `references/do-and-dont.md` § 何時打破規則）| 就地拍板卡與 sticky bar 照 marathon 範本複製 |
-| ⭐ **教學 / 概念解釋 / 機制說明**（無待拍板）| ⭐ **`references/examples/explainer/`** — 必先讀 README 選骨架 A | 骨架 A 七段（一句話 → 類比 → 核心模型 → 走一遍 → 誤解 → **邊界** → 收合深入）+ 解釋類元件 + 漸進揭露 |
+| ⭐ **已有課程／教學影片／講座／逐字稿的伴讀筆記** | **先讀 `references/teaching-companion.md`**；沿用既有頁或 base-template 的視覺基底 | 依來源時間與教學順序；保留動機、推演、例子、失敗修正與回扣；建立來源覆蓋對照，不套七段摘要 |
+| ⭐ **獨立概念解釋 / 機制說明**（無既有課程順序、無待拍板）| ⭐ **`references/examples/explainer/`** — 必先讀 README 選骨架 A | 骨架 A 七段（一句話 → 類比 → 核心模型 → 走一遍 → 誤解 → **邊界** → 收合深入）+ 解釋類元件 + 漸進揭露 |
 | ⭐ **報告 / 盤點 / 健檢結論 / 研究結果**（無待拍板）| ⭐ **`references/examples/explainer/`** — 骨架 B | 骨架 B 六段（結論先講 → 全貌地圖 → 逐塊展開 → 交叉切面 → 待觀察 → 附錄收合）|
 | ⭐ **程式開發解說**（解釋剛改了什麼 / PR 導讀 / 架構變更說明；開發者受眾）| `assets/base-template.html` + code-shape 元件（**不套七段教學骨架、太重**）| 輕量三段：先講結論 → 結構 diff 或 call tree 秀「改了什麼 / 長什麼樣」→ 逐塊展開；code-shape 必配摘要文字說明；函式名可當內容、路徑當灰字註腳（見 `references/component-library.md` § Code-shape）|
 | 只要視覺風格參考、內容結構自理 | `references/examples/anthropic-gallery/` 或 `assets/base-template.html` | 編輯風純展示；⚠️ 這兩份**只給視覺不給骨架**，內容順序請照 explainer 的骨架走 |
@@ -81,7 +83,9 @@ description: 把長文件、報告、規格、設計決策、架構說明、教�
 2. **任一訊號中 → 先數「實際要 user 拍板的題數」**（不是數關鍵字次數）：
    - **≥ 5 題 → marathon-decision-sheet 範本**（強制、不要 fallback）
    - **< 5 題 → 輕量決策頁**：base-template + 就地拍板卡，開場兩三句就進題目。⚠️ 不要因為關鍵字命中就硬套六段敘事——實測 5 題的內容被套成 2265 行、每題墊了四百多行前置閱讀，讀者要捲過 58% 才看得到第一題
-3. 都不中 → 對照表選其他範本
+3. 都不中 → 先區分「重新解釋一個概念」和「把已有教學材料整理成伴讀」。後者走 `references/teaching-companion.md`，不因素材很長就改成摘要；其他情境再依對照表選範本。
+
+**教學伴讀模式優先規則**：來源的教學順序與完整概念優先於下文通用的七段骨架、每段視覺化、去重與細節收合要求。必要推導及回扣可直接用連續文字展開；只在有助理解的位置配圖。此例外不豁免來源核對、閱讀排版或互動驗證。
 
 ### Step 1 思考階段（用 markdown）
 
@@ -92,7 +96,8 @@ description: 把長文件、報告、規格、設計決策、架構說明、教�
      - **有對應背景 → 該題就地放在那段的末尾**（同一張卡：問題 → 方案對照 → 選項 → 補充框）。**禁**把它丟到文件尾段的決策區
      - **不需要背景就能拍**（延後項目 / 要不要寫進記憶 / 怎麼驗 / 提交拆法 / 要不要推送）→ 收進尾段「程序快答」
      - 配對表寫進 outline，寫 HTML 時照著擺。⚠️ 舊版把說明全放上半、拍板全放下半，兩邊用不同分類軸切，讀者拍板時找不到回去的路——這是本 skill 修過最嚴重的動線問題，不要退回去
-   - ⭐ **圖像化優先**：outline 的每一段都要問「這段能不能用畫的」。**預設用視覺元件承載資訊，文字只做補述**——流程用流程圖 / 對比用並排 mock / 結構用樹狀或版面縮圖 / 分類用卡片矩陣 / 數據看形狀就交棒 `chart`。連續三行以上的純文字說明就是訊號：停下來想有沒有對應的視覺形態（元件清單見 `references/component-library.md`、資料圖表交棒 `chart`）
+   - 教學伴讀先建立來源單元對照，再按來源順序安排段落；配圖服務當段理解，不用視覺摘要取代內文。
+   - ⭐ **圖像化優先**（教學伴讀依前項例外）：outline 的每一段都要問「這段能不能用畫的」。**預設用視覺元件承載資訊，文字只做補述**——流程用流程圖 / 對比用並排 mock / 結構用樹狀或版面縮圖 / 分類用卡片矩陣 / 數據看形狀就交棒 `chart`。連續三行以上的純文字說明就是訊號：停下來想有沒有對應的視覺形態（元件清單見 `references/component-library.md`、資料圖表交棒 `chart`）
    - ⭐ **挑最小的視圖**（2026-08-29 拍板，參考 show-me）：每段選視圖時用下表挑「能把重點講清楚的**最小**視圖」，且**一頁通常只用其中一兩種、別淹沒讀者**：
 
      | 要講的點 | 最小視圖 |
@@ -125,6 +130,7 @@ description: 把長文件、報告、規格、設計決策、架構說明、教�
 
 9. **跑中英混雜詞審稿**：
    - Read `references/cn-en-translation-checklist.md` 看替換清單 + 保留原則
+   - 原文保留／全文伴讀的來源層不批次改字；疑點加編者註。以下替換用於整理者自行撰寫的文字。
    - 用 Python script 批次替換對照表中的詞（順序：長片語先、短詞後）
    - 範例 script 在 reference 檔末段、可直接複製改用
 10. **保留技術專有名詞**（替換清單明列）：
@@ -173,7 +179,8 @@ description: 把長文件、報告、規格、設計決策、架構說明、教�
 14. ⭐ **看截圖**：版面健檢每個寬度都印了整頁截圖路徑，用你的看圖工具看 1440px 那張（手機版另看 390px）。這一步不是可選——2026-09-09 兩次同型事故都是自檢全綠、畫面不能看。
 15. ⭐ **人工確認指令標 `!` 的兩項**（機器判斷不了）：
     - **UI 決策題的畫面對照**：指令只報「幾個畫面樣張 / 幾題」，要你自己判斷哪些題涉及畫面（頁面 / 按鈕 / 欄位顯示 / modal / 排版 / 順序 / 文案）。涉及畫面的題**每題至少 2 個樣張**（現況 + 改後），判準見 `references/do-and-dont.md` § UI/UX 決策題
-    - **純展示的骨架順序**：指令只列出段落 id，要你自己對照骨架 A / B（見 `references/examples/explainer/README.md`）。骨架 A 缺「一句話定義 / 核心模型 / 邊界」任一、骨架 B 缺「結論先講 / 待觀察」任一，即違規
+    - **教學伴讀**：按 `references/teaching-companion.md` 驗來源覆蓋、時間精度與教學依賴；全文模式逐節比對內文。不可用通用檢查通過代替內容完整性證據。
+    - **其餘純展示的骨架順序**：指令只列出段落 id，要你自己對照骨架 A / B（見 `references/examples/explainer/README.md`）。骨架 A 缺「一句話定義 / 核心模型 / 邊界」任一、骨架 B 缺「結論先講 / 待觀察」任一，即違規
 16. **跑完才 open**（存放路徑與索引見 § 開檔方式）
 
 **例外情境**（規則不適用、不需審稿）：
@@ -198,10 +205,10 @@ description: 把長文件、報告、規格、設計決策、架構說明、教�
 | Footer / Sticky bar | 如有互動或 export 需求、加 sticky bottom bar |
 | ⭐⭐ **就地拍板**（有待拍板題時）| 每題放在它的背景段落末尾、同一張卡收完「問題 → 對照 → 選項 → 補充框」；只有不需要背景的程序題才收進尾段「程序快答」。範本 `.inline-decide` 區塊即此形態 |
 | ⭐ **題目地圖**（拍板題 ≥ 5 題時）| 開場區之後放一張「本次要你拍 N 題」清單卡：每題一行 + 已選 / 未選狀態 + 點擊跳到它的段落。讓「已有脈絡、只想拍完」的讀法不必捲過整篇。範本用 `renderQuestionMap()` 自動生成、不用手工維護 |
-| ⭐ **圖像化承載**（每個主要區段）| 資訊優先用視覺元件呈現、文字只做補述。連續三行以上純文字說明 = 該回頭找對應的視覺形態（`references/component-library.md`；真資料圖表交棒 `chart`）|
+| ⭐ **圖像化承載**（教學伴讀按需要配圖；其餘每個主要區段）| 資訊優先用視覺元件呈現、文字只做補述。連續三行以上純文字說明 = 該回頭找對應的視覺形態（`references/component-library.md`；真資料圖表交棒 `chart`）|
 | ⭐⭐ **Session 識別**（每份產出都要）| 多視窗並行時，一眼認出這份是哪個 session 產的。**寫 HTML 前先跑** `eval "$(<本 skill 目錄>/scripts/session-label.sh)"` 取得 `$VT_LABEL` / `$VT_ID`，填進 snippet 的 `window.VT_SESSION`。三層識別（分頁標題前綴 / 彩色 favicon / 頂部色帶徽章）整段見 `references/session-identity.md`；`base-template` 與 explainer / spec-alignment / marathon-decision-sheet 三份範例已內建、只需填值 |
-| ⭐ **解釋型骨架**（純展示內容）| 內容順序照 `references/examples/explainer/README.md` 的骨架 A（概念解釋）或骨架 B（報告盤點）走，不要每次重新發明。**邊界段不可省**（沒有它讀者會把剛學到的東西過度外推）|
-| ⭐ **漸進揭露**（長的純展示內容）| 主線只留所有人都該知道的，原理 / 推導 / 邊界案例收進 `<details class="reveal">`。摘要行必須能獨立判斷值不值得展開，寫「更多」等於沒寫。見 `references/interaction-patterns.md` § 漸進揭露 |
+| ⭐ **解釋型骨架**（教學伴讀依來源順序；其餘純展示內容）| 內容順序照 `references/examples/explainer/README.md` 的骨架 A（概念解釋）或骨架 B（報告盤點）走，不要每次重新發明。**邊界段不可省**（沒有它讀者會把剛學到的東西過度外推）|
+| ⭐ **漸進揭露**（教學主線與必要推導直接展開；其餘長的純展示內容）| 主線只留所有人都該知道的，原理 / 推導 / 邊界案例收進 `<details class="reveal">`。摘要行必須能獨立判斷值不值得展開，寫「更多」等於沒寫。見 `references/interaction-patterns.md` § 漸進揭露 |
 | ⭐ **全頁評論 snippet** | 預設內建（複製 `references/interaction-patterns.md` § 全頁評論系統 整段進 `</body>` 前）|
 | ⭐ **預覽 + 複製 modal**（有 export 按鈕時）| 既有「複製給 AI」按鈕點下去 → 彈 modal 顯示完整內容 → 確認後才複製。Pattern 見 `references/interaction-patterns.md` § Multi-format export |
 | ⭐⭐ **複製 builder 必整合所有 user 輸入**（hard rule） | 「複製拍板摘要 / 複製給 AI」類按鈕背後的 `buildSummary()` / `buildPrompt()` builder **必須**滿足三件事、否則違規：<br>① 末尾接 `+ (window.vtCollectComments?.() || '')` 拼全頁評論<br>② 註冊 `window.vtBuildDecisionExport = builderFn` 隱藏 fallback 重複按鈕<br>③ **每個 radio / select 拍板題旁邊必須配 `<textarea data-comment-for="<id>">` 補充框**，builder 內透過 `getComment(id)` 抓取拼進對應行<br>👉 整套寫法見 `references/examples/marathon-decision-sheet/index.html`：搜 `function buildSummary`（含 `getComment` 與末尾拼接 `vtCollectComments`）與緊接其後的 `window.vtBuildDecisionExport = buildSummary`；`vtCollectComments` 本體在評論 snippet 段（搜 `window.vtCollectComments =`）。行號會漂、以函式名為準 |
@@ -233,10 +240,10 @@ description: 把長文件、報告、規格、設計決策、架構說明、教�
 | 程式碼路徑形式的清單（如 `packages/x/y/z.ts:34`）出現在 hero 或主視覺 | 影響快速瀏覽；改寫成自然語言 |
 | 深淺色切換（除非使用者明確要求）| 預設淺色 only、減少 CSS 複雜度與 dark mode 適配 bug |
 | 字數爆炸的長段落 | 改用卡片 / 表格 / 視覺化；段落超過 4 行考慮拆 |
-| ⭐ 整段只有純文字、沒有任何視覺元件 | 能畫的東西寫成文字＝要 user 自己在腦裡還原。每段都先問「這段能不能用畫的」（說明與描述盡量圖像化）|
+| ⭐ 整段只有純文字、沒有任何視覺元件（教學伴讀依需要，允許連續文字） | 能畫的東西寫成文字＝要 user 自己在腦裡還原。每段都先問「這段能不能用畫的」（說明與描述盡量圖像化）|
 | ⭐⭐ 把拍板題全部堆到文件尾段、跟它的背景說明分開 | 讀者拍板時找不到回去的路，於是每張決策卡只好重述背景 → 同件事講兩次。有背景的題就地放在該段末尾，尾段只留不需背景的程序題 |
 | ⭐ 未滿 5 題卻套六段敘事重型範本 | 每題墊四百多行前置閱讀、資訊密度過低；改用輕量決策頁（開場兩三句就進題目）|
-| 重複資訊在不同區段重複呈現（同視覺）| 同樣 chart 出現兩次會讓 user 疲勞、用不同 layer / 切角呈現 |
+| 重複資訊在不同區段重複呈現（同視覺；教學回扣應保留並連回前文）| 同樣 chart 出現兩次會讓 user 疲勞、用不同 layer / 切角呈現 |
 | 沒實際內容的 placeholder（「Lorem ipsum」「TODO」） | 寫不出來就不要放、user 看到空殼比看到沒寫差 |
 | UI/UX 決策題只給「採納 / 不採納」文字 radio、不畫現況 vs 修改後畫面 | user 拍板前腦補不出「改完長怎樣」、無從比較體驗；涉及 UI/UX 的拍板題一律配 before/after mock（見 `references/do-and-dont.md` § UI/UX 決策題）|
 | 該看形狀的資料塞進表格、或手刻 SVG / 用 CSS 寬度百分比假裝**資料圖表** | 等於要 user 自己在腦裡畫圖；手刻座標算錯不會報錯、只會安靜畫出錯的形狀。時間序列 ≥ 5 點 / 占比結構 / 分組對比 → 走 `chart` skill（判準與交棒規則見 `references/component-library.md` § 資料圖表）。⚠️ 這條管**資料圖表**；**結構圖**（流程 / 泳道 / 狀態機 / 架構）反過來**該用 SVG**、照 `references/structure-diagrams.md` 的幾何規則畫（2026-09-05 拍板，見下一條）|
@@ -246,7 +253,7 @@ description: 把長文件、報告、規格、設計決策、架構說明、教�
 
 ## 模板擴展原則
 
-當有新類型場景需要新模板時：
+新增內容整理模式時，可在 references 加入專用指引，並更新 Step 0 分流；不必複製另一套樣式。當確實需要新模板時：
 
 1. 在 `references/component-library.md` 加一段新元件範例（含 HTML snippet + 何時用）
 2. 在 `references/examples/` 加一個完整實例 folder（含 README 說明用途 + 完整 HTML）
@@ -309,7 +316,8 @@ open ~/Documents/claude-html/{YYYY-MM}/{slug}-{date}.html   # Linux 用 xdg-open
 | **`references/session-identity.md`** ⭐ | **每份產出都要** — session 標籤取得方式 + 三層識別 snippet（分頁標題前綴 / 彩色 favicon / 頂部色帶徽章），解決多視窗並行時分不出來源 |
 | `references/layout-patterns.md` | 整體 layout — sidebar / sticky / grid / 響應式 |
 | `references/do-and-dont.md` | 進階風格規範、何時不要做什麼 |
-| **`references/examples/explainer/`** ⭐ | **純展示預設範本** — 教學 / 概念解釋 / 報告盤點。**兩套內容骨架**（A 概念解釋七段 / B 報告六段）+ 為什麼是這個順序 + 解釋類元件 + 漸進揭露示範 |
+| **`references/teaching-companion.md`** ⭐ | 已有課程／影片／逐字稿的時間脈絡伴讀：內容覆蓋、來源對時、配圖與閱讀驗收 |
+| **`references/examples/explainer/`** ⭐ | **其餘純展示預設範本** — 教學 / 概念解釋 / 報告盤點。**兩套內容骨架**（A 概念解釋七段 / B 報告六段）+ 為什麼是這個順序 + 解釋類元件 + 漸進揭露示範 |
 | **`references/examples/marathon-decision-sheet/`** ⭐ | **拍板預設範本** — marathon 收尾 / 決策追認（Anthropic 風 + 就地拍板 + 題目地圖 + 一鍵複製決策摘要）|
 | `references/examples/anthropic-gallery/` | 純展示範例 — 無互動、editorial 質感參考 |
 | **`references/examples/spec-alignment/`** ⭐ | **規格對齊範本** — 跟老闆 / 業務對齊規格·設計·方向（由上而下 + 使用者操作情境畫面 mock + 只留最終規格/UX/真決策、藏分析推導與內部編號）|
@@ -333,6 +341,7 @@ open ~/Documents/claude-html/{YYYY-MM}/{slug}-{date}.html   # Linux 用 xdg-open
 | 「給我幾個 design alternative 我選」 | ✓ | ⭐ marathon-decision-sheet（有拍板）|
 | 「列一下 tech-debt 給我排序」 | ✓ | ⭐ marathon-decision-sheet（有排序拍板）|
 | 「做個儀表板看資料」 | ✓ | base-template 換 functional token（藍 accent + 純 sans）|
+| 「把這支三小時課程做成完整筆記」／「依逐字稿與 PDF 做伴讀」 | ✓ | ⭐ teaching-companion 時間脈絡模式 |
 | 「教我 prompt cache 怎麼運作」 | ✓ | ⭐ explainer 骨架 A |
 | 「修一下這個 bug」 | ✗ | — |
 | 「我的 commit message 怎麼寫」 | ✗ | — |

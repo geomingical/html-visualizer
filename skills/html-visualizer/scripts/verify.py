@@ -47,6 +47,28 @@ def visible_text(h):
     return " ".join(re.findall(r">([^<>]+)<", t))
 
 
+class DocumentProfileParser(HTMLParser):
+    """Read an explicit content mode without inferring it from subject words."""
+
+    def __init__(self):
+        super().__init__()
+        self.mode = None
+        self.sections = []
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "meta" and attrs.get("name") == "html-visualizer-mode":
+            self.mode = attrs.get("content")
+        if tag == "section" and attrs.get("id"):
+            self.sections.append(attrs["id"])
+
+
+def document_profile(h):
+    parser = DocumentProfileParser()
+    parser.feed(h)
+    return parser
+
+
 def load_mixed_words():
     """從中英對照表抽出「該換掉的英文詞」。"""
     if not os.path.exists(CHECKLIST):
@@ -299,7 +321,9 @@ def check_class_collision(h):
 def main(path):
     h = open(path, encoding="utf-8").read()
     decisions = re.findall(r'data-decision[^>]*data-id="([^"]+)"', h)
-    kind = f"拍板類 · {len(decisions)} 題" if decisions else "純展示類"
+    profile = document_profile(h)
+    teaching = not decisions and profile.mode == "teaching-companion"
+    kind = f"拍板類 · {len(decisions)} 題" if decisions else ("教學伴讀類" if teaching else "純展示類")
     print(f"\n▸ {os.path.basename(path)}  （{kind}）")
 
     # ── 結構完整性 ───────────────────────────────
@@ -445,6 +469,11 @@ def main(path):
                f"{mocks} 個畫面樣張 / {len(decisions)} 題（涉及畫面的題每題應有 2 個）")
 
     # ── 純展示 ───────────────────────────────────
+    elif teaching:
+        head("教學伴讀骨架")
+        report(SKIP, "不強制收合教學正文", "必要推導、例子、失敗修正與回扣依來源順序展開")
+        report(WARN, "教學脈絡與來源覆蓋尚需對照",
+               "本指令未驗證內容完整性；完整概念筆記核對理解鏈，全文伴讀另逐節比對內文")
     else:
         head("純展示骨架")
         long_doc = len(h) > 40000
@@ -455,8 +484,9 @@ def main(path):
         else:
             report(SKIP, "篇幅不長，漸進揭露非必要")
 
-    ids = re.findall(r'<section id="([^"]+)"', h)
-    report(SKIP, "段落順序需人工對照骨架", " → ".join(ids) if ids else "（無 section）")
+    ids = profile.sections
+    report(SKIP, "段落順序需對照來源" if teaching else "段落順序需人工對照骨架",
+           " → ".join(ids) if ids else "（無 section）")
 
     # ── 版面健檢 ─────────────────────────────────
     # 最常見的產出缺陷是跑版，而它只有渲染出來才看得到（實際事故：自檢全綠但頁面跑版）
@@ -504,7 +534,9 @@ def main(path):
         if not any(v in m.group(2) for v in VIS):
             plain.append(m.group(1))
     # assets/ 下的起手骨架只有佔位段落，不適用此檢查
-    if "/assets/" in os.path.abspath(path):
+    if teaching:
+        report(SKIP, "教學配圖按理解需要", "不強制每節配圖；仍須實看圖文對應、裁圖與閱讀邊界")
+    elif "/assets/" in os.path.abspath(path):
         report(SKIP, "每段都有視覺元件", "起手骨架，佔位段落不算")
     else:
         report(OK if not plain else BAD, "每段都有視覺元件",
